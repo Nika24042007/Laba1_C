@@ -14,6 +14,7 @@ typedef struct Node
 Node *create(int n, Node *last, int level){
     Node *tmp = malloc(sizeof(Node));
     if (tmp == NULL){
+        free(tmp);
         printf("Memory error\n");
         return 0;
     }
@@ -25,18 +26,50 @@ Node *create(int n, Node *last, int level){
     return tmp;
 }
 
-Node **add(int *len, Node **tree, int n){
-    for (int i = 0; i < *len; i++){
-        if (tree[i]->number == n){
-            printf("Error: indetical nods\n");
+Node **add_node(int *len, Node **tree, Node *node, int n){
+    if ((node->right == NULL && n > node->number) || (node->left == NULL && n < node->number)){
+        for (int i = 0; i < *len; i++){
+            if (tree[i]->number == n){
+                printf("Error: indetical nods\n");
+                return tree;
+            }
+        }
+        Node *new_node = create(n, NULL, 0);
+        new_node->last = node;
+        new_node->level = node->level+1;
+        if (node->right == NULL && n > node->number){
+            node->right = new_node;
+        }
+        else if (node->left == NULL && n <node->number){
+            node->left = new_node;
+        }
+        (*len)++;
+        Node **new_tree = realloc(tree, *len*sizeof(Node*));
+        if(new_tree == NULL){
+            free(new_tree);
+            printf("Memory error\n");
             return tree;
         }
-    }
-    Node *new_node = create(n, NULL, 0);
+        new_tree[*len-1] = new_node;
+        tree = new_tree;
+        return tree;
+        }
+        else if(n > node->number){
+            return add_node(len, tree, node->right, n);
+        }
+        else if (n < node->number){
+            return add_node(len, tree, node->left, n);
+        }
+}
+
+Node **add(int *len, Node **tree, int n){
+    
     
     if (*len == 0) {
+        Node *new_node = create(n, NULL, 0);
         Node **new_tree = malloc(sizeof(Node*));
         if (new_tree == NULL){
+            free(new_tree);
             printf("Memory error\n");
             return tree;
         }
@@ -45,28 +78,7 @@ Node **add(int *len, Node **tree, int n){
         return new_tree;
     }
     else{
-        for(int i = 0; i < *len; i++){
-            if ((tree[i]->right == NULL && n > tree[i]->number) || (tree[i]->left == NULL && n < tree[i]->number)){
-                new_node->last = tree[i];
-                new_node->level = tree[i]->level+1;
-                if (tree[i]->right == NULL && n > tree[i]->number){
-                    tree[i]->right = new_node;
-                }
-                else if (tree[i]->left == NULL && n < tree[i]->number){
-                    tree[i]->left = new_node;
-                }
-                break;
-            }
-        }
-    (*len)++;
-    Node **new_tree = realloc(tree, *len*sizeof(Node*));
-    if(new_tree == NULL){
-        printf("Memory error\n");
-        return tree;
-    }
-    new_tree[*len-1] = new_node;
-    tree = new_tree;
-    return tree;
+        return add_node(len, tree, tree[0], n);
     }
 }
 
@@ -101,6 +113,7 @@ Node **delete(int *len, Node **tree, int n){
         free(del);
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
+            free(new_tree);
             printf("Memory error\n");
             return tree;
         }
@@ -130,6 +143,7 @@ Node **delete(int *len, Node **tree, int n){
         free(del);
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
+            free(new_tree);
             printf("Memory error.\n");
             return tree;
         }
@@ -159,6 +173,7 @@ Node **delete(int *len, Node **tree, int n){
 
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
+            free(new_tree);
             printf("Memory error.\n");
             return tree;
         }
@@ -264,7 +279,8 @@ int main(void){
     int len = 0;
     Node **tree = malloc(len*sizeof(struct Node*));
     if (tree == NULL){
-        printf("Error");
+        free(tree);
+        printf("Memory error");
         return 0;
     }
     while (flag == 1){
@@ -303,4 +319,5 @@ int main(void){
         }
     }
     free(tree);
+    return 0;
 }
