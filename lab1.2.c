@@ -14,7 +14,8 @@ typedef struct Node
 Node *create(int n, Node *last, int level){
     Node *tmp = malloc(sizeof(Node));
     if (tmp == NULL){
-        return NULL;
+        printf("Memory error\n");
+        return 0;
     }
     tmp->last = last;
     tmp->left = NULL;
@@ -27,7 +28,7 @@ Node *create(int n, Node *last, int level){
 Node **add(int *len, Node **tree, int n){
     for (int i = 0; i < *len; i++){
         if (tree[i]->number == n){
-            printf("Error: indetical nods\n1");
+            printf("Error: indetical nods\n");
             return tree;
         }
     }
@@ -36,7 +37,7 @@ Node **add(int *len, Node **tree, int n){
     if (*len == 0) {
         Node **new_tree = malloc(sizeof(Node*));
         if (new_tree == NULL){
-            printf("Error\n");
+            printf("Memory error\n");
             return tree;
         }
         new_tree[0] = new_node;
@@ -60,7 +61,7 @@ Node **add(int *len, Node **tree, int n){
     (*len)++;
     Node **new_tree = realloc(tree, *len*sizeof(Node*));
     if(new_tree == NULL){
-        printf("Error");
+        printf("Memory error\n");
         return tree;
     }
     new_tree[*len-1] = new_node;
@@ -100,7 +101,7 @@ Node **delete(int *len, Node **tree, int n){
         free(del);
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
-            printf("Error.\n");
+            printf("Memory error\n");
             return tree;
         }
         int j = 0;
@@ -129,7 +130,7 @@ Node **delete(int *len, Node **tree, int n){
         free(del);
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
-            printf("Error.\n");
+            printf("Memory error.\n");
             return tree;
         }
         int j = 0;
@@ -158,7 +159,7 @@ Node **delete(int *len, Node **tree, int n){
 
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
-            printf("Error.\n");
+            printf("Memory error.\n");
             return tree;
         }
         int j = 0;
@@ -301,4 +302,5 @@ int main(void){
             break;
         }
     }
+    free(tree);
 }
