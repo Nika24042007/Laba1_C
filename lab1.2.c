@@ -14,6 +14,7 @@ typedef struct Node
 Node *create(int n, Node *last, int level){
     Node *tmp = malloc(sizeof(Node));
     if (tmp == NULL){
+        free(tmp);
         printf("Memory error\n");
         return 0;
     }
@@ -37,6 +38,7 @@ Node **add(int *len, Node **tree, int n){
     if (*len == 0) {
         Node **new_tree = malloc(sizeof(Node*));
         if (new_tree == NULL){
+            free(new_tree);
             printf("Memory error\n");
             return tree;
         }
@@ -61,6 +63,7 @@ Node **add(int *len, Node **tree, int n){
     (*len)++;
     Node **new_tree = realloc(tree, *len*sizeof(Node*));
     if(new_tree == NULL){
+        free(new_tree);
         printf("Memory error\n");
         return tree;
     }
@@ -101,6 +104,7 @@ Node **delete(int *len, Node **tree, int n){
         free(del);
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
+            free(new_tree);
             printf("Memory error\n");
             return tree;
         }
@@ -130,6 +134,7 @@ Node **delete(int *len, Node **tree, int n){
         free(del);
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
+            free(new_tree);
             printf("Memory error.\n");
             return tree;
         }
@@ -159,6 +164,7 @@ Node **delete(int *len, Node **tree, int n){
 
         Node **new_tree = malloc((*len - 1) * sizeof(Node*));
         if (new_tree == NULL) {
+            free(new_tree);
             printf("Memory error.\n");
             return tree;
         }
@@ -264,7 +270,8 @@ int main(void){
     int len = 0;
     Node **tree = malloc(len*sizeof(struct Node*));
     if (tree == NULL){
-        printf("Error");
+        free(tree);
+        printf("Memory error");
         return 0;
     }
     while (flag == 1){
@@ -303,4 +310,5 @@ int main(void){
         }
     }
     free(tree);
+    return 0;
 }
